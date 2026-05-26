@@ -1,0 +1,24 @@
+# Keypairs e chaves privadas locais
+local-usdc.json
+*.json.bak
+
+# Artefatos do validador local Solana
+test-ledger/
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# Dependências (subprojetos têm seus próprios .gitignore)
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

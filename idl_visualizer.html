@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muralis NFT - Painel de IDL & Contratos</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0b0c10;
+            --bg-surface: #14161d;
+            --bg-card: rgba(30, 34, 45, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --color-primary: #00f2fe;
+            --color-secondary: #4facfe;
+            --color-accent: #a18cd1;
+            --color-success: #00e676;
+            --color-warning: #ffd600;
+            --color-error: #ff1744;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+            --glow: 0 0 20px rgba(0, 242, 254, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Background effects */
+        .bg-glow-1 {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(0, 242, 254, 0.08) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(79, 172, 254, 0.08) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(11, 12, 16, 0.8);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--glow);
+            font-family: var(--font-display);
+            font-weight: 800;
+            color: var(--bg-base);
+            font-size: 1.25rem;
+        }
+
+        .brand-text h1 {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .connection-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid rgba(0, 230, 118, 0.2);
+            padding: 0.35rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            color: var(--color-success);
+            font-weight: 600;
+        }
+
+        .connection-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--color-success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--color-success);
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            padding: 2rem 3rem;
+            gap: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .nav-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+        }
+
+        .nav-title {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item button {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            text-align: left;
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-item button:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .nav-item.active button {
+            color: var(--color-primary);
+            background: rgba(0, 242, 254, 0.08);
+            border-left: 3px solid var(--color-primary);
+            font-weight: 600;
+        }
+
+        /* Drag-and-drop zone */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            background: rgba(20, 22, 29, 0.4);
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--color-secondary);
+            background: rgba(79, 172, 254, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-secondary);
+        }
+
+        .upload-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            min-width: 0; /* Prevents flex items from overflowing */
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.1) 80%, transparent);
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            word-break: break-all;
+            color: var(--text-main);
+        }
+
+        .stat-value.address {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--color-primary);
+        }
+
+        /* Accounts Visualizer */
+        .accounts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .account-row {
+            display: grid;
+            grid-template-columns: 200px 100px 1fr;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            gap: 1rem;
+        }
+
+        .account-row:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(0, 242, 254, 0.2);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.05);
+        }
+
+        .account-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .account-badges {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge.signer {
+            background: rgba(161, 140, 209, 0.15);
+            color: var(--color-accent);
+            border: 1px solid rgba(161, 140, 209, 0.3);
+        }
+
+        .badge.writable {
+            background: rgba(255, 23, 68, 0.1);
+            color: var(--color-error);
+            border: 1px solid rgba(255, 23, 68, 0.2);
+        }
+
+        .badge.system {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .account-address {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: right;
+            word-break: break-all;
+        }
+
+        .account-address.custom {
+            color: var(--color-secondary);
+            font-style: italic;
+        }
+
+        /* Arguments & Simulator Form */
+        .simulator-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .simulator-layout {
+                grid-template-columns: 1fr;
+            }
+            .main-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .sidebar {
+                width: 100%;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.1);
+        }
+
+        .control-type {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--color-secondary);
+            float: right;
+            margin-top: -1.75rem;
+            margin-right: 1rem;
+            pointer-events: none;
+        }
+
+        /* Code output */
+        .code-box {
+            background: #07080b;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 0.5rem;
+        }
+
+        .code-title {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .btn-copy {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: 600;
+        }
+
+        .btn-copy:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--color-primary);
+        }
+
+        pre {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+            overflow-x: auto;
+            flex: 1;
+            white-space: pre-wrap;
+        }
+
+        /* Error Codes & Events List */
+        .error-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+
+        .error-card {
+            background: rgba(255, 23, 68, 0.03);
+            border: 1px solid rgba(255, 23, 68, 0.1);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .error-card:hover {
+            border-color: rgba(255, 23, 68, 0.3);
+            background: rgba(255, 23, 68, 0.05);
+        }
+
+        .error-code {
+            font-family: var(--font-mono);
+            background: rgba(255, 23, 68, 0.1);
+            color: var(--color-error);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .error-info h4 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-main);
+        }
+
+        .error-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Raw IDL tab */
+        .raw-idl-container {
+            height: 500px;
+            width: 100%;
+        }
+
+        .raw-idl-container pre {
+            height: 100%;
+            background: #07080b;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        /* Notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--color-primary);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), var(--glow);
+            color: var(--color-primary);
+            font-weight: 600;
+            z-index: 1000;
+            display: none;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Utility classes */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
+    <header>
+        <div class="brand">
+            <div class="brand-logo">M</div>
+            <div class="brand-text">
+                <h1>Muralis NFT</h1>
+                <p>Anchor Program IDL Visualizer & Interaction Hub</p>
+            </div>
+        </div>
+        <div class="connection-badge">
+            <div class="dot"></div>
+            <span>IDL Carregado: muralis_nft</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav class="nav-card">
+                <h3 class="nav-title">Navegação</h3>
+                <ul class="nav-list">
+                    <li class="nav-item active" id="tab-overview" onclick="switchTab('overview')">
+                        <button>
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                            Visão Geral
+                        </button>
+                    </li>
+                    <li class="nav-item" id="tab-instruction" onclick="switchTab('instruction')">
+                        <button>
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                            Instruções
+                        </button>
+                    </li>
+                    <li class="nav-item" id="tab-errors" onclick="switchTab('errors')">
+                        <button>
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            Erros do Contrato
+                        </button>
+                    </li>
+                    <li class="nav-item" id="tab-raw" onclick="switchTab('raw')">
+                        <button>
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+                            Código JSON (IDL)
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="upload-zone" id="drop-zone">
+                <div class="upload-icon">⚡</div>
+                <h4 style="font-size: 0.9rem; margin-bottom: 0.25rem;">Atualizar IDL</h4>
+                <p class="upload-text">Arraste ou clique para carregar um novo arquivo JSON do Anchor</p>
+                <input type="file" id="file-input" class="hidden" accept=".json">
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- 1. OVERVIEW VIEW -->
+            <section id="view-overview" class="glass-card">
+                <div class="section-header">
+                    <h2 class="section-title">Programa Muralis NFT</h2>
+                    <p class="section-desc">Esta é a representação visual da interface do contrato compilado via Anchor Framework, extraído diretamente da pasta do WSL.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Program ID (Endereço)</div>
+                        <div class="stat-value address" id="program-address">BAwh4QcGuNCgYVVfo6pZ8LndAi5WgqU6FHdCo8Y1fAN8</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Nome do Contrato</div>
+                        <div class="stat-value" id="program-name">muralis_nft</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Versão IDL / Spec</div>
+                        <div class="stat-value">0.1.0 / 0.1.0</div>
+                    </div>
+                </div>
+
+                <h3 style="font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                    Instruções Disponíveis (Entrypoints)
+                </h3>
+                <div class="accounts-container">
+                    <div class="account-row" style="cursor: pointer;" onclick="switchTab('instruction')">
+                        <div class="account-name" style="color: var(--color-primary);">mint_supporter_certificate</div>
+                        <div class="account-badges">
+                            <span class="badge signer">Signers (2)</span>
+                            <span class="badge writable">Writable (5)</span>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); text-align: right;">
+                            Minta um NFT de Certificado de Apoiador
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. INSTRUCTION DETAILED VIEW -->
+            <section id="view-instruction" class="glass-card hidden">
+                <div class="section-header">
+                    <h2 class="section-title">Instrução: mint_supporter_certificate</h2>
+                    <p class="section-desc">Gera e cunha um NFT único (Certificado de Apoiador) na carteira do investidor com os metadados do projeto.</p>
+                </div>
+
+                <div class="simulator-layout">
+                    <!-- Inputs and Accounts Left -->
+                    <div>
+                        <h3 style="font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 1rem; color: var(--color-secondary);">
+                            Parâmetros (Arguments)
+                        </h3>
+                        <form id="simulator-form" oninput="updateCodeOutput()">
+                            <div class="form-group">
+                                <label class="form-label" for="arg-project-id">project_id</label>
+                                <input type="text" id="arg-project-id" class="form-control" value="muralis-project-01">
+                                <span class="control-type">string</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="arg-contribution">contribution_amount (em Lamports - 1 SOL = 10⁹)</label>
+                                <input type="number" id="arg-contribution" class="form-control" value="5000000000">
+                                <span class="control-type">u64</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="arg-name">name (Nome do NFT)</label>
+                                <input type="text" id="arg-name" class="form-control" value="Muralis Supporter Gold #01" maxlength="32">
+                                <span class="control-type">string</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="arg-symbol">symbol</label>
+                                <input type="text" id="arg-symbol" class="form-control" value="MURALIS" maxlength="10">
+                                <span class="control-type">string</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="arg-uri">uri (URL do Metadado JSON)</label>
+                                <input type="text" id="arg-uri" class="form-control" value="https://arweave.net/example-metadata-hash">
+                                <span class="control-type">string</span>
+                            </div>
+                        </form>
+
+                        <h3 style="font-family: var(--font-display); font-size: 1.1rem; margin: 1.5rem 0 1rem; color: var(--color-secondary);">
+                            Contas Envolvidas (Accounts Context)
+                        </h3>
+                        <div class="accounts-container" id="accounts-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Code Output Right -->
+                    <div>
+                        <div class="code-box">
+                            <div class="code-header">
+                                <span class="code-title">Script de Chamada (Anchor Client)</span>
+                                <button class="btn-copy" onclick="copyCode()">Copiar Código</button>
+                            </div>
+                            <pre id="code-output">// Script Anchor gerado automaticamente...</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. CONTRACT ERRORS VIEW -->
+            <section id="view-errors" class="glass-card hidden">
+                <div class="section-header">
+                    <h2 class="section-title">Erros Customizados do Contrato</h2>
+                    <p class="section-desc">Abaixo estão listadas as validações e restrições de segurança aplicadas nas funções do contrato.</p>
+                </div>
+
+                <div class="error-grid" id="errors-list">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- 4. RAW IDL VIEW -->
+            <section id="view-raw" class="glass-card hidden">
+                <div class="section-header">
+                    <h2 class="section-title">Arquivo de Especificação da Interface (IDL)</h2>
+                    <p class="section-desc">Representação JSON em tempo real que mapeia o contrato Solana.</p>
+                </div>
+
+                <div class="raw-idl-container">
+                    <pre><code id="raw-idl-text"></code></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="toast" id="toast">Copiado para a área de transferência!</div>
+
+    <script>
+        // Embedded IDL data from Muralis
+        let idl = {
+  "address": "BAwh4QcGuNCgYVVfo6pZ8LndAi5WgqU6FHdCo8Y1fAN8",
+  "metadata": {
+    "name": "muralis_nft",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "mint_supporter_certificate",
+      "discriminator": [
+        18,
+        67,
+        222,
+        208,
+        130,
+        66,
+        202,
+        176
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "supporter_token_account",
+          "writable": true
+        },
+        {
+          "name": "metadata_account",
+          "writable": true
+        },
+        {
+          "name": "master_edition_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJe8bv"
+        },
+        {
+          "name": "token_metadata_program",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "project_id",
+          "type": "string"
+        },
+        {
+          "name": "contribution_amount",
+          "type": "u64"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "name": "uri",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "SupporterCertificateMinted",
+      "discriminator": [
+        71,
+        35,
+        69,
+        187,
+        116,
+        254,
+        83,
+        146
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidProjectId",
+      "msg": "Project ID must be between 1 and 64 characters."
+    },
+    {
+      "code": 6001,
+      "name": "ZeroContribution",
+      "msg": "Contribution amount must be greater than zero."
+    },
+    {
+      "code": 6002,
+      "name": "NameTooLong",
+      "msg": "Name exceeds Metaplex limit (32 characters)."
+    },
+    {
+      "code": 6003,
+      "name": "SymbolTooLong",
+      "msg": "Symbol exceeds Metaplex limit (10 characters)."
+    },
+    {
+      "code": 6004,
+      "name": "UriTooLong",
+      "msg": "URI exceeds Metaplex limit (200 characters)."
+    }
+  ]
+};
+
+        // Initialize UI
+        document.addEventListener('DOMContentLoaded', () => {
+            renderIDLData();
+            setupDropZone();
+        });
+
+        function renderIDLData() {
+            // Render basic info
+            document.getElementById('program-address').textContent = idl.address || 'N/A';
+            document.getElementById('program-name').textContent = idl.metadata?.name || 'Não identificado';
+            document.getElementById('raw-idl-text').textContent = JSON.stringify(idl, null, 2);
+
+            // Populate accounts for mint_supporter_certificate
+            const instr = idl.instructions.find(i => i.name === 'mint_supporter_certificate') || idl.instructions[0];
+            const accountsContainer = document.getElementById('accounts-list');
+            accountsContainer.innerHTML = '';
+
+            if (instr && instr.accounts) {
+                instr.accounts.forEach(acc => {
+                    const row = document.createElement('div');
+                    row.className = 'account-row';
+                    
+                    let badges = '';
+                    if (acc.signer) badges += '<span class="badge signer">Signer</span> ';
+                    if (acc.writable) badges += '<span class="badge writable">Writable</span>';
+                    if (!acc.signer && !acc.writable && acc.address) badges += '<span class="badge system">System</span>';
+
+                    let addrSpan = '';
+                    if (acc.address) {
+                        addrSpan = `<span class="account-address">${acc.address}</span>`;
+                    } else {
+                        addrSpan = `<span class="account-address custom">Dinâmico (Carteira do Usuário/Mint)</span>`;
+                    }
+
+                    row.innerHTML = `
+                        <div class="account-name">${acc.name}</div>
+                        <div class="account-badges">${badges}</div>
+                        ${addrSpan}
+                    `;
+                    accountsContainer.appendChild(row);
+                });
+            }
+
+            // Populate Errors
+            const errorsContainer = document.getElementById('errors-list');
+            errorsContainer.innerHTML = '';
+            if (idl.errors) {
+                idl.errors.forEach(err => {
+                    const card = document.createElement('div');
+                    card.className = 'error-card';
+                    card.innerHTML = `
+                        <div class="error-code">${err.code}</div>
+                        <div class="error-info">
+                            <h4>${err.name}</h4>
+                            <p>${err.msg}</p>
+                        </div>
+                    `;
+                    errorsContainer.appendChild(card);
+                });
+            }
+
+            updateCodeOutput();
+        }
+
+        // Navigation switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            document.querySelectorAll('.content > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+        }
+
+        // Live code snippet generator
+        function updateCodeOutput() {
+            const projectId = document.getElementById('arg-project-id').value;
+            const contribution = document.getElementById('arg-contribution').value;
+            const name = document.getElementById('arg-name').value;
+            const symbol = document.getElementById('arg-symbol').value;
+            const uri = document.getElementById('arg-uri').value;
+
+            const code = `import * as anchor from "@coral-xyz/anchor";
+import { Program } from "@coral-xyz/anchor";
+import { MuralisNft } from "../target/types/muralis_nft";
+import { PublicKey } from "@solana/web3.js";
+
+// Configurações do ambiente
+const provider = anchor.AnchorProvider.env();
+anchor.setProvider(provider);
+
+const program = anchor.workspace.MuralisNft as Program<MuralisNft>;
+
+// Chaves e Contas simuladas
+const payer = provider.wallet.publicKey;
+const mintKeypair = anchor.web3.Keypair.generate(); // Novo Mint do NFT
+
+// PDA do Token Metadata (Metaplex)
+const TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+  "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+);
+
+const [metadataAddress] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from("metadata"),
+    TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+    mintKeypair.publicKey.toBuffer(),
+  ],
+  TOKEN_METADATA_PROGRAM_ID
+);
+
+const [masterEditionAddress] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from("metadata"),
+    TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+    mintKeypair.publicKey.toBuffer(),
+    Buffer.from("edition"),
+  ],
+  TOKEN_METADATA_PROGRAM_ID
+);
+
+const supporterTokenAccount = anchor.utils.token.associatedAddress({
+  mint: mintKeypair.publicKey,
+  owner: payer,
+});
+
+async function mintSupporterCertificate() {
+  console.log("Iniciando cunhagem do Certificado...");
+  
+  const tx = await program.methods
+    .mintSupporterCertificate(
+      "${projectId}", // project_id
+      new anchor.BN(${contribution}), // contribution_amount (u64)
+      "${name}", // name
+      "${symbol}", // symbol
+      "${uri}" // uri (metadata link)
+    )
+    .accounts({
+      payer: payer,
+      mint: mintKeypair.publicKey,
+      supporterTokenAccount: supporterTokenAccount,
+      metadataAccount: metadataAddress,
+      masterEditionAccount: masterEditionAddress,
+      tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
+      associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+      tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+      systemProgram: anchor.web3.SystemProgram.programId,
+      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+    })
+    .signers([mintKeypair])
+    .rpc();
+
+  console.log("Transação enviada com sucesso! Signature:", tx);
+  console.log("Endereço do NFT Mintado:", mintKeypair.publicKey.toBase58());
+}`;
+            document.getElementById('code-output').textContent = code;
+        }
+
+        // Copy mechanism
+        function copyCode() {
+            const codeText = document.getElementById('code-output').textContent;
+            navigator.clipboard.writeText(codeText).then(() => {
+                const toast = document.getElementById('toast');
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 2500);
+            });
+        }
+
+        // Drop zone drag and drop file upload
+        function setupDropZone() {
+            const zone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+
+            zone.addEventListener('click', () => fileInput.click());
+
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.style.borderColor = 'var(--color-primary)';
+                zone.style.background = 'rgba(0, 242, 254, 0.05)';
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.style.borderColor = 'var(--border-color)';
+                zone.style.background = 'rgba(20, 22, 29, 0.4)';
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.style.borderColor = 'var(--border-color)';
+                zone.style.background = 'rgba(20, 22, 29, 0.4)';
+                
+                const file = e.dataTransfer.files[0];
+                if (file && file.name.endsWith('.json')) {
+                    readFile(file);
+                } else {
+                    alert('Por favor, envie apenas arquivos .json do Anchor');
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    readFile(file);
+                }
+            });
+        }
+
+        function readFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (parsed.instructions && parsed.address) {
+                        idl = parsed;
+                        renderIDLData();
+                        alert('IDL de ' + (idl.metadata?.name || 'contrato') + ' carregado com sucesso!');
+                    } else {
+                        alert('JSON inválido. Certifique-se de que é um IDL gerado pelo Anchor contendo instructions e address.');
+                    }
+                } catch (err) {
+                    alert('Erro ao ler o arquivo JSON: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "Muralis",
+  "description": "Plataforma de tokenização de arte urbana e rastreamento de impacto sustentável na Solana.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

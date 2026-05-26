@@ -1,0 +1,21 @@
+[package]
+name = "muralis_escrow"
+version = "0.1.0"
+description = "Muralis — Anchor program for project funding escrow in USDC/PYUSD. Holds contributor funds until the project's target is reached, then releases them to the artist."
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "muralis_escrow"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "0.30.1", features = ["init-if-needed"] }
+anchor-spl = { version = "0.30.1" }

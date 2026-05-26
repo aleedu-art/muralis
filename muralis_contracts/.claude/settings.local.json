@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(solana-install --help)",
+      "Bash(solana-install list *)",
+      "Read(//root/.local/share/solana/install/releases/**)",
+      "Read(//root/.local/share/solana/install/releases/3.1.10/**)",
+      "Bash(~/.local/share/solana/install/releases/3.1.10/solana-release/bin/cargo-build-sbf --version)",
+      "Bash(ln -sfn /root/.local/share/solana/install/releases/3.1.10/solana-release /root/.local/share/solana/install/active_release)",
+      "Bash(cargo-build-sbf --version)",
+      "Bash(rm /root/muralis_handolf/muralis_contracts/Cargo.lock)",
+      "Bash(anchor build *)",
+      "Bash(python3 *)",
+      "Bash(rustup run *)",
+      "Bash(anchor --version)",
+      "Bash(rustup show *)",
+      "Bash(npm list *)",
+      "Bash(/root/.avm/bin/avm --version)",
+      "Bash(/root/.cargo/bin/anchor *)"
+    ]
+  }
+}

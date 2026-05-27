@@ -125,11 +125,12 @@ Dark mode, accent verde neon, "Techno-Organic". Fonte: Sora (headings) + Inter (
 
 A tinta fotocatalítica usada nos murais tem claim do fabricante de que **1m² absorve o equivalente a 20 árvores em CO₂**. Esse é o ângulo central da comunicação ESG. Ainda precisa validar a fonte do número.
 
-## Time
+## 👥 Time
 
-- **Marcos** — Marketing/growth + dev support
-- **[seu nome aqui]** — continuação do dev no Antigravity
-- + outros membros do time
+*   **Alexandre Avelino** — Core Blockchain Developer & Software Architect
+*   **Katia Suzue** — Co-Founder & Web3 Ecosystem Director (Founder of SuzueNFTAcademy)
+*   **Marcos Lustosa** — Marketing, Growth & Developer Support
+*   **Ras Junior** — Product Designer & Frontend QA Engineer
 
 ## Onde tirar dúvidas
 

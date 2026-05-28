@@ -73,11 +73,9 @@ export default function MapPage() {
       attributionControl: true,
     });
 
-    // Tile dark/voyager (CARTO) combina com o design system dark
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: "abcd",
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
     }).addTo(map);
 
@@ -178,7 +176,12 @@ export default function MapPage() {
                 to={`/mural/${p.id}`}
                 className="flex items-center gap-3 bg-surface-container-low rounded-xl p-3 border border-white/5 hover:border-primary/40 transition-all"
               >
-                <img src={p.image} alt={p.title} className="w-12 h-12 rounded-lg object-cover shrink-0" />
+                <img
+                  src={p.image}
+                  alt={p.title}
+                  className="w-12 h-12 rounded-lg object-cover shrink-0"
+                  onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1561055657-b9e0bf0fa360?w=500"; }}
+                />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-bold truncate">{p.title}</p>
                   <p className="text-[10px] text-on-surface-variant truncate">{p.location.city}, {p.location.state}</p>
@@ -210,7 +213,7 @@ function buildPopupHtml(p: Project): string {
   const progress = Math.round((p.raisedUsdc / p.goalUsdc) * 100);
   return `
     <div style="min-width: 220px; font-family: Inter, sans-serif;">
-      <img src="${p.image}" alt="${p.title}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;" />
+      <img src="${p.image}" alt="${p.title}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;" onerror="this.src='https://images.unsplash.com/photo-1561055657-b9e0bf0fa360?w=500'" />
       <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">${p.title}</div>
       <div style="font-size: 11px; color: #888; margin-bottom: 6px;">${p.location.city}, ${p.location.state}</div>
       <div style="display: flex; gap: 8px; font-size: 11px; color: #00c896; margin-bottom: 6px;">

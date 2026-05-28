@@ -104,7 +104,12 @@ export default function Details() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <div className="relative w-full aspect-[4/3] md:aspect-[21/9] overflow-hidden">
-        <img src={mural.image} alt={mural.title} className="w-full h-full object-cover" />
+        <img
+          src={mural.image}
+          alt={mural.title}
+          className="w-full h-full object-cover"
+          onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1561055657-b9e0bf0fa360?w=500"; }}
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
         <div className="absolute bottom-6 left-4">
           <div className="flex items-center gap-2 text-primary text-[10px] font-bold bg-primary/10 px-3 py-1 rounded-full border border-primary/30 backdrop-blur-md">

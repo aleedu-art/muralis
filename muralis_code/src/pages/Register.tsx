@@ -1,4 +1,4 @@
-import { useState, useRef, ReactNode } from "react";
+import React, { useState, useEffect, useRef, ReactNode } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -27,11 +27,13 @@ function devnetSimCoords(uf: string, city: string, address: string) {
 export default function Register() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [cepLoading, setCepLoading] = useState(false);
   const navigate = useNavigate();
   const { publicKey } = useWallet();
   const { dispatch } = useMuralis();
 
   const [form, setForm] = useState({
+    cep: "",
     title: "",
     description: "",
     artist: "",
@@ -57,6 +59,25 @@ export default function Register() {
   function update<K extends keyof typeof form>(key: K, value: typeof form[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
+
+  useEffect(() => {
+    const cleanedCep = form.cep.replace(/\D/g, "");
+    if (cleanedCep.length !== 8) return;
+
+    setCepLoading(true);
+    fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && !data.erro) {
+          const bairro = data.bairro ? `, ${data.bairro}` : "";
+          update("address", `${data.logradouro}${bairro}`);
+          update("city", data.localidade);
+          update("state", data.uf);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setCepLoading(false));
+  }, [form.cep]);
 
   function handleFileChange(file: File | null | undefined) {
     if (!file) return;
@@ -257,6 +278,21 @@ export default function Register() {
             </div>
 
             <div className="space-y-6">
+              <Field label="CEP">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="00000-000"
+                    maxLength={9}
+                    value={form.cep}
+                    onChange={(e) => update("cep", e.target.value)}
+                    className="w-full bg-surface-container border border-white/5 rounded-xl p-4 outline-none focus:border-primary transition-colors pr-12"
+                  />
+                  {cepLoading && (
+                    <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-on-surface-variant" />
+                  )}
+                </div>
+              </Field>
               <Field label="Localização">
                 <div className="relative">
                   <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant w-5 h-5" />

@@ -108,7 +108,7 @@ export default function Details() {
           src={mural.image}
           alt={mural.title}
           className="w-full h-full object-cover"
-          onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1561055657-b9e0bf0fa360?w=500"; }}
+          onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500"; }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
         <div className="absolute bottom-6 left-4">

@@ -7,22 +7,6 @@ import { useMuralis } from "../state/MuralisContext";
 import { flowCreateProject } from "../state/flows";
 import { calculateImpact, TREES_PER_SQUARE_METER } from "../types";
 
-function devnetSimCoords(uf: string, city: string, address: string) {
-  const addr = address.trim().toLowerCase();
-  const isRJ =
-    uf.trim().toUpperCase() === "RJ" ||
-    city.trim().toLowerCase().includes("rio de janeiro");
-  const offset = () => (Math.random() - 0.5) * 0.02;
-
-  if (isRJ && addr.includes("copacabana"))
-    return { lat: -22.9711 + offset(), lng: -43.1852 + offset() };
-  if (!isRJ && addr.includes("paulista"))
-    return { lat: -23.5614 + offset(), lng: -46.6559 + offset() };
-
-  return isRJ
-    ? { lat: -22.9068 + offset(), lng: -43.1729 + offset() }
-    : { lat: -23.5505 + offset(), lng: -46.6333 + offset() };
-}
 
 export default function Register() {
   const [step, setStep] = useState(1);
@@ -65,23 +49,45 @@ export default function Register() {
     if (cleanedCep.length !== 8) return;
 
     setCepLoading(true);
-    fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && !data.erro) {
-          const bairro = data.bairro ? `, ${data.bairro}` : "";
-          update("address", `${data.logradouro}${bairro}`);
-          update("city", data.localidade);
-          update("state", data.uf);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setCepLoading(false));
+
+    const run = async () => {
+      const res = await fetch(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+      if (!res.ok) return;
+
+      const data = await res.json();
+      if (!data || data.erro) return;
+
+      const bairro = data.bairro ? `, ${data.bairro}` : "";
+      update("address", `${data.logradouro}${bairro}`);
+      update("city", data.localidade);
+      update("state", data.uf);
+
+      const q = encodeURIComponent(
+        `${data.logradouro}, ${data.localidade}, ${data.uf}, Brasil`
+      );
+      const geoRes = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${q}`,
+        { headers: { "Accept-Language": "pt-BR", "User-Agent": "Muralis/1.0" } }
+      );
+      if (!geoRes.ok) return;
+
+      const geoData = await geoRes.json();
+      if (Array.isArray(geoData) && geoData.length > 0) {
+        update("lat", parseFloat(geoData[0].lat));
+        update("lng", parseFloat(geoData[0].lon));
+      }
+    };
+
+    run().catch(() => {}).finally(() => setCepLoading(false));
   }, [form.cep]);
 
   function handleFileChange(file: File | null | undefined) {
     if (!file) return;
-    update("image", URL.createObjectURL(file));
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) update("image", e.target.result as string);
+    };
+    reader.readAsDataURL(file);
   }
 
   function handleDrop(e: React.DragEvent) {
@@ -101,7 +107,6 @@ export default function Register() {
 
     setLoading(true);
     try {
-      const coords = devnetSimCoords(form.state, form.city, form.address);
       const { project } = await flowCreateProject({
         title: form.title,
         description: form.description,
@@ -111,8 +116,8 @@ export default function Register() {
         heightMeters: form.heightMeters,
         paintLiters: form.paintLiters,
         location: {
-          lat: coords.lat,
-          lng: coords.lng,
+          lat: form.lat,
+          lng: form.lng,
           city: form.city,
           state: form.state,
           country: "Brasil",
@@ -128,7 +133,8 @@ export default function Register() {
       navigate(`/mural/${project.id}`);
     } catch (e) {
       console.error(e);
-      alert("Erro ao mintar o projeto. Tente novamente.");
+      const msg = e instanceof Error ? e.message : "Verifique a carteira e o saldo na Devnet.";
+      alert(`Erro ao registrar o projeto na Solana:\n${msg}`);
     } finally {
       setLoading(false);
     }

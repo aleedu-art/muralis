@@ -180,7 +180,7 @@ export default function MapPage() {
                   src={p.image}
                   alt={p.title}
                   className="w-12 h-12 rounded-lg object-cover shrink-0"
-                  onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1561055657-b9e0bf0fa360?w=500"; }}
+                  onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500"; }}
                 />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-bold truncate">{p.title}</p>
@@ -213,7 +213,7 @@ function buildPopupHtml(p: Project): string {
   const progress = Math.round((p.raisedUsdc / p.goalUsdc) * 100);
   return `
     <div style="min-width: 220px; font-family: Inter, sans-serif;">
-      <img src="${p.image}" alt="${p.title}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;" onerror="this.src='https://images.unsplash.com/photo-1561055657-b9e0bf0fa360?w=500'" />
+      <img src="${p.image}" alt="${p.title}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;" onerror="this.src='https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500'" />
       <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">${p.title}</div>
       <div style="font-size: 11px; color: #888; margin-bottom: 6px;">${p.location.city}, ${p.location.state}</div>
       <div style="display: flex; gap: 8px; font-size: 11px; color: #00c896; margin-bottom: 6px;">

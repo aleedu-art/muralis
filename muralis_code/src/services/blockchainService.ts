@@ -162,17 +162,7 @@ export class RealBlockchainService implements BlockchainService {
 
       return { tokenAddress: mint.toBase58(), txSignature };
     } catch (err) {
-      if (!provider.connection.rpcEndpoint.includes("devnet")) throw err;
-
-      console.warn(
-        "[Muralis] mintProjectRwa falhou na Devnet (contrato RWA não publicado). " +
-        "Simulando mintagem para demonstração. Erro original:",
-        err
-      );
-      return {
-        tokenAddress: mint.toBase58(),
-        txSignature: `devnet-sim-${Date.now()}`,
-      };
+      throw err;
     }
   }
 

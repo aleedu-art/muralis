@@ -132,6 +132,14 @@ A tinta fotocatalítica usada nos murais tem claim do fabricante de que **1m² a
 *   **Marcos Lustosa** — Marketing, Growth & Developer Support
 *   **Ras Junior** — Product Designer & Frontend QA Engineer
 
+## 🌐 Smart Contract Deploy
+
+| Programa | Program ID | Rede |
+|---|---|---|
+| `muralis_program` | `ECpeJjLyyGuK28Q3o7BmNt25K1eBi2sUt31qmbJy6zWB` | Devnet |
+
+🔍 [Ver no Solana Explorer](https://explorer.solana.com/address/ECpeJjLyyGuK28Q3o7BmNt25K1eBi2sUt31qmbJy6zWB?cluster=devnet)
+
 ## Onde tirar dúvidas
 
 - PRD com detalhes do produto: `PRD_Muralis.md`

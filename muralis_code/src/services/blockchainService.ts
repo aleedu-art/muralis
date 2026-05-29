@@ -13,6 +13,8 @@ import {
   Keypair,
   PublicKey,
   LAMPORTS_PER_SOL,
+  SystemProgram,
+  SYSVAR_RENT_PUBKEY,
 } from "@solana/web3.js";
 import { BN, type AnchorProvider, type Program } from "@coral-xyz/anchor";
 import type { Project } from "../types";
@@ -129,6 +131,11 @@ export class RealBlockchainService implements BlockchainService {
     const metadataAccount = findMetadataAddress(mint);
     const masterEditionAccount = findMasterEditionAddress(mint);
 
+    const [projectRegistry] = PublicKey.findProgramAddressSync(
+      [Buffer.from("project"), Buffer.from(project.id)],
+      programs.rwa.programId
+    );
+
     const name = project.title.slice(0, 32);
     const uri = `https://muralis.app/metadata/rwa/${project.id}.json`;
 
@@ -144,7 +151,19 @@ export class RealBlockchainService implements BlockchainService {
           new BN(Math.round(project.co2PerYear * 1000)),
           new BN(Math.round(project.goalUsdc * 1_000_000))
         )
-        .accounts({ artist, mint, artistTokenAccount, metadataAccount, masterEditionAccount })
+        .accounts({
+          artist,
+          projectRegistry,
+          mint,
+          artistTokenAccount,
+          metadataAccount,
+          masterEditionAccount,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          rent: SYSVAR_RENT_PUBKEY,
+        })
         .signers([mintKp])
         .rpc();
 

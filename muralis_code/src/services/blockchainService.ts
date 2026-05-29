@@ -81,7 +81,7 @@ const TOKEN_METADATA_PROGRAM_ID = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzj
  * Devnet USDC mint (Circle). Altere a constante abaixo se usar outro mint.
  * Na produção, mover para variável de ambiente via vite.config define().
  */
-const USDC_MINT = new PublicKey("4zMMC9srt5Ri5X14GAgXUiSUHJu9AZEnA5yC97M6m7FR");
+const USDC_MINT = new PublicKey("4zMMC9srt5CHGbBt2c22asb5SGMvo7qPygjgf2iUvA34");
 
 
 function findAta(owner: PublicKey, mint: PublicKey): PublicKey {

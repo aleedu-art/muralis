@@ -131,8 +131,10 @@ export class RealBlockchainService implements BlockchainService {
     const metadataAccount = findMetadataAddress(mint);
     const masterEditionAccount = findMasterEditionAddress(mint);
 
+    const projectIdSeed = project.id.replace(/-/g, "");
+
     const [projectRegistry] = PublicKey.findProgramAddressSync(
-      [Buffer.from("project"), Buffer.from(project.id)],
+      [Buffer.from("project"), Buffer.from(projectIdSeed)],
       programs.rwa.programId
     );
 
@@ -143,7 +145,7 @@ export class RealBlockchainService implements BlockchainService {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const txSignature: string = await (programs.rwa.methods as any)
         .mintProjectRwa(
-          project.id,
+          projectIdSeed,
           name,
           "MRWA",
           uri,
@@ -172,7 +174,7 @@ export class RealBlockchainService implements BlockchainService {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (programs.escrow.methods as any)
         .initializeEscrow(
-          project.id,
+          projectIdSeed,
           new BN(Math.round(project.goalUsdc * 1_000_000)),
           new BN(deadlineSecs)
         )

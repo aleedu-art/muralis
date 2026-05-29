@@ -120,6 +120,11 @@ export default function Home() {
           <p className="text-xs font-medium text-on-surface-variant">ODS 11 — Cidades e Comunidades Sustentáveis</p>
           <p className="text-xs font-medium text-on-surface-variant">ODS 13 — Ação Contra a Mudança Global do Clima</p>
           <div className="flex items-center gap-2 text-primary/60 mt-2">
+            <svg width="14" height="12" viewBox="0 0 101 88" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-label="Solana">
+              <path d="M100.48 69.3817L83.8068 86.7425C83.4444 87.1277 82.9507 87.3432 82.4328 87.3432H1.93564C1.13985 87.3432 0.693397 86.4114 1.18513 85.7858L17.8584 68.425C18.2208 68.0398 18.7145 67.8243 19.2324 67.8243H99.7295C100.525 67.8243 100.972 68.7561 100.48 69.3817Z"/>
+              <path d="M100.48 19.8568L83.8068 2.49603C83.4444 2.11085 82.9507 1.89532 82.4328 1.89532H1.93564C1.13985 1.89532 0.693397 2.82716 1.18513 3.45274L17.8584 20.8135C18.2208 21.1987 18.7145 21.4142 19.2324 21.4142H99.7295C100.525 21.4142 100.972 20.4824 100.48 19.8568Z"/>
+              <path d="M100.48 44.6193L83.8068 27.2585C83.4444 26.8733 82.9507 26.6578 82.4328 26.6578H1.93564C1.13985 26.6578 0.693397 27.5896 1.18513 28.2152L17.8584 45.576C18.2208 45.9612 18.7145 46.1767 19.2324 46.1767H99.7295C100.525 46.1767 100.972 45.2449 100.48 44.6193Z"/>
+            </svg>
             <span className="text-[10px] uppercase tracking-widest font-bold">Powered by Solana</span>
           </div>
         </div>
